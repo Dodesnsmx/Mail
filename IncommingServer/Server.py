@@ -1,29 +1,52 @@
-from datetime import datetime
+# from datetime import datetime
+# import asyncore
+# from smtpd import SMTPServer
+#
+#
+# class CustomSMTPServer(SMTPServer):
+#
+#     def process_message(self, peer, mailfrom, rcpttos, data):
+#         print 'Message'
+#         filename = '%s-%d.eml' % (datetime.now().strftime('%Y%m%d%H%M%S'),
+#                 self.no)
+#         f = open(filename, 'w')
+#         f.write(data)
+#         f.close
+#         print '%s saved.' % filename
+#         self.no += 1
+#
+#
+#
+# def run():
+#     server = CustomSMTPServer(('127.0.0.1', 55555), None)
+#     try:
+#         server
+#         asyncore.loop()
+#     except KeyboardInterrupt:
+#         pass
+#
+#
+# if __name__ == '__main__':
+#     run()
+#
+
+
+import smtpd
 import asyncore
-from smtpd import SMTPServer
+import email
 
 
-class CustomSMTPServer(SMTPServer):
-
+class CustomSMTPServer(smtpd.SMTPServer):
     def process_message(self, peer, mailfrom, rcpttos, data):
-        filename = '%s-%d.eml' % (datetime.now().strftime('%Y%m%d%H%M%S'),
-                self.no)
-        f = open(filename, 'w')
-        f.write(data)
-        f.close
-        print '%s saved.' % filename
-        self.no += 1
+        print 'Receiving message from:', peer
+        print 'Message addressed from:', mailfrom
+        print 'Message addressed to  :', rcpttos
+        print 'Message length        :', len(data)
+        msg = email.message_from_string(data)
+        msg
+        return
 
 
+server = CustomSMTPServer(('127.0.0.1', 1025), None)
 
-def run():
-    server = CustomSMTPServer(('127.0.0.1', 55555), None)
-    try:
-        asyncore.loop()
-    except KeyboardInterrupt:
-        pass
-
-
-if __name__ == '__main__':
-    run()
-
+asyncore.loop()
