@@ -2,6 +2,7 @@ import smtplib
 import email.utils
 from email.mime.text import MIMEText
 import socket
+from IncomingCom import ServerCommunication
 
 if raw_input('Send or receive ? [S/R]') == 'S':
 
@@ -22,20 +23,7 @@ if raw_input('Send or receive ? [S/R]') == 'S':
 
 else:
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('127.0.0.1', 110))
-    s.send('HELLO')
-    d = s.recv(1024)
-    if d == 'GOOD CONNECTION':
-        s.send('AUTH ido 123')
-        d = s.recv(1024)
-        if d == 'AUTH SUCCEEDED':
-            print 'AUTHORISED!'
-            s.send('FETCH 4')
-            for i in range(4):
-                print 'Receiving...'
-                d = s.recv(1024)
-                print d
-                if d == 'FETCH COMPLETED':
-                    break
-                s.send('RECEIVED')
+    server = ServerCommunication('127.0.0.1', 55555)
+    server.connect()
+    server.authenticate('ido', '123456')
+    print server.fetch(3)

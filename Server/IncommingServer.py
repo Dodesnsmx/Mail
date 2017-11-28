@@ -1,7 +1,7 @@
 import socket
 import threading
 import os
-import email
+
 
 class Server(object):
 
@@ -69,7 +69,7 @@ class HandleClient(object):
                             f = open(client_mails_path + '\\' + mail_file_names[i], 'r')
                             self.socket.send(f.read())
                             self.socket.recv(1024)
-                        self.socket.send('FETCH COMPLETED')
+                        self.socket.send('FETCHCOMPLETED ' + str(fetch_amount), 'SENT')
 
                 else:
                     raise
@@ -80,4 +80,4 @@ class HandleClient(object):
 
 
 if __name__ == "__main__":
-    Server('127.0.0.1',110).listen()
+    Server('127.0.0.1', 55555).listen()
